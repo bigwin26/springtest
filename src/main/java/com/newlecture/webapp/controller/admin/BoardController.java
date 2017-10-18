@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import com.mysql.jdbc.Connection;
 import com.newlecture.webapp.dao.NoticeDao;
 import com.newlecture.webapp.dao.NoticeFileDao;
 import com.newlecture.webapp.entity.Notice;
@@ -126,6 +127,11 @@ public class BoardController {
 		  int row = noticeDao.insert(notice);
 		  
 		  noticeFileDao.insert(new NoticeFile(null,fileName,nextId));
+		  
+		  Connection con = ;
+		  con.setAutoCommit(false);
+		  
+		  Statement st = con.createStatement();
 		   
 	      return "redirect:../notice";
 	   }

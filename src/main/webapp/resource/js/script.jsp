@@ -1,4 +1,7 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
+
 <html>
 <head>
 <meta charset="UTF-8">
@@ -347,44 +350,109 @@ function calcApp(){
    
    <!-- ------------------노드복제 예제2 ---------------------------------->
    window.addEventListener("load", function(){
-	      var cloneButton = document.querySelector("#ex2-clone input[value='복제']");
+	      var cloneButton = document.querySelector("#ex2-clone input[value='단순복제']");
+	      var ajaxButton = document.querySelector("#ex2-clone input[value='ajax요청']");
 	      var tbody = document.querySelector("#ex2-clone tbody");
 	      var template = document.querySelector("#ex2-clone template");
+	      var container = document.querySelector("#ex2-clone div:first-Child");
 	      
-	      var data = [{id:"1", title:"4", writerId:"7"},{id:"2", title:"5", writerId:"8"},{id:"3", title:"6", writerId:"9"}];
+	      var data = [{id:"1", title:"니", writerId:"newlec"},{id:"2", title:"나", writerId:"dragon"},{id:"3", title:"노", writerId:"wa"}];
 	      
 	      
 	      ajaxButton.onclick = function(e){
+	    	  /* 2.비동기형방식 */
+	    	  var xhr = new XMLHttpRequest();
+	    	  
+	    	  /* xhr.onreadystatechange = function(e){
+	    		  if(xhr.readyState == 4)
+	    		  data = eval(xhr.responseText);
+	    	  }; */
+	    	  xhr.onload = function(){
+	    		  data = JSON.parse(xhr.responseText);
+	    		  // 2. ajax icon 제거
+	    		  container.removeChild(container.lastChild);
+	    	  };
+	    	  xhr.onerorr = function(e){
+	    		alert("예기치 못한 오류가 발생했습니다.");  
+	    	  };
+	    	  
+	    	  xhr.open("GET","../../customer/notice-ajax",true);
+	    	  xhr.send();
+	    	  
+	    	  //1. ajax icon 추가
+	    	  var img = document.createElement("img");
+	    	  img.src = "../images/ajax-loader.gif";
+	    	  container.appendChild(img);
+	    	  
+	    	  /* 1. 동기형방식
+	    	  var xhr = new XMLHttpRequest();
+	    	  xhr.open("GET","../../customer/notice-ajax",false);
+	    	  xhr.send();
+	    	  data = eval(xhr.responseText); */
 	    	  
 	      };
 	      
 	      cloneButton.onclick = function(e){
-	      
-	           if('content' in template){
-	        	   
-	        	   for(var i=0; i<data.length; i++)
-	        		   {
-	        	   var clone = document.importNode(template.content, true);
-	        	   
-					var tds = clone.querySelectorAll("td")
-					tds[0].appendChild(document.createTextNode (data[i].id));
-					tds[1].textContent = data[i].title;
-					tds[2].textContent =  data[i].writerId;
-	        		   }
-					tbody.appendChild(clone);
-	        		   
+	            
+	            if('content' in template){
+//	               alert("현재 브라우저가 template을 지원하고있습니다");
+	               /* 
+	                //template의 content에 값을 설정
+	               var tds = template.content.querySelectorAll("td");
+	               tds[0].appendChild(document.createTextNode("1"));
+	               tds[1].appendChild(document.createTextNode("test title"));
+	               tds[2].textContent = "newlec";
+	               // 값을 설정된 content에 복사
+	               var clone = document.importNode(template.content, true);
+	                 */
+	               for(var i=0; i<data.length;i++){
+	                  
+	               var clone = document.importNode(template.content, true);
+	               var tds = clone.querySelectorAll("td");
+	               tds[0].appendChild(document.createTextNode(data[i].id));
+	               tds[1].textContent = data[i].title;
+	               tds[2].textContent = data[i].writerId; 
+	               
+	               //복제된 clone(tr)을 노드 트리에 추가
+	               tbody.appendChild(clone);
+	               }
+	               
+	            }
 	      }
-	      }
+
 	   });
 </script>
 
 </head>
 <body>
-
+<!-- ------------------전송하기와 트리거 ---------------------------------->
+	<div id="ex3-upload">
+	<form action="../../upload" method="post" enctype="multipart/form-data">
+		<div>
+			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+			<input type="submit" value="전송" />
+			<input type="button" value="" />
+		</div>
+		<div id="clone-container">
+			<table border="1">
+				<tbody>
+					<tr>
+						<td>제목</td>
+						<td><input type="text" name="title"/></td>
+					</tr>
+					<tr>
+						<td>첨부파일</td>
+						<td><input type="file" name="file"/></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		</form>
+	</div>
 <!-- ------------------노드복제 예제2 ---------------------------------->
 	<div id="ex2-clone">
 		<div>
-			<input type="button" value="복제" />
+			<input type="button" value="단순복제" />
 			<input type="button" value="ajax요청" />
 		</div>
 		<div id="clone-container">
