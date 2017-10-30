@@ -9,7 +9,9 @@ public class Member {
 	private String birthday;
 	private String phone;
 	private String email;
-	
+	private int point;
+
+
 	public Member() {
 		
 	}
@@ -91,6 +93,15 @@ public class Member {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public int getPoint() {
+		return point;
+	}
+
+
+	public void setPoint(int point) {
+		this.point = point;
 	}
 	
 	

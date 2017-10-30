@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 	<h2>수정 페이지</h2>
-	<form action="notice-edit" method="post">
+	<form action="?${_csrf.parameterName}=${_csrf.token}" method="post" enctype="multipart/form-data">
 		<fieldset>
 			<legend>공지사항 수정정보 필드</legend>
 			<table border="1">
@@ -18,11 +18,11 @@
 					</tr>
 					<tr>
 						<td>작성자</td>
-						<td>${n.writer}</td>
+						<td>${n.writerId}</td>
 						<td>조회수</td>
 						<td>${n.hit}</td>
 					</tr>
-					<tr>
+					<%-- <tr>
 						<td>첨부파일</td>
 						<td colspan="3">
 						<c:forEach var="f" items="${files}">
@@ -30,7 +30,7 @@
 							<a href="notice-file-del?code=${f.code}&ncode=${n.code}">[X]</a>
 						</c:forEach>
 						</td>
-					</tr>
+					</tr> --%>
 					<tr>
 						<td colspan="4"><textarea name="content" rows="20" cols="60">${n.content}</textarea>
 
@@ -39,9 +39,9 @@
 				</tbody>
 			</table>
 			<div>				
-				<input type="hidden" name="code" value="${n.code}" />
+				<input type="hidden" name="code" value="" />
 				<input type="submit" value="저장" />
-				<a href="notice-detail?code=${n.code}">취소</a>				
+				<a href="notice-detail?code=">취소</a>				
 			</div>
 		</fieldset>
 	</form>

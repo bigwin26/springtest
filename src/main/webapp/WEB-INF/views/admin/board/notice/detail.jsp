@@ -52,6 +52,7 @@
 			
 			<div class="margin-top text-align-center">
 				<a class="btn btn-list" href="../notice">목록</a>
+				<a class="btn btn-list" href="../notice/edit/${n.id}">수정</a>
 			</div>
 			
 			<div class="margin-top">

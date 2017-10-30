@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.security.Principal;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -25,22 +26,30 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.mysql.jdbc.Connection;
+import com.newlecture.webapp.dao.MemberDao;
 import com.newlecture.webapp.dao.NoticeDao;
 import com.newlecture.webapp.dao.NoticeFileDao;
 import com.newlecture.webapp.entity.Notice;
 import com.newlecture.webapp.entity.NoticeFile;
 import com.newlecture.webapp.entity.NoticeView;
+import com.newlecture.webapp.service.admin.BoardService;
 
 
 @Controller
 @RequestMapping("/admin/board/*")
 public class BoardController {
 	
-	   @Autowired
+	@Autowired
+	private BoardService service;
+	
+	  /* @Autowired
 	   private NoticeDao noticeDao;
 	   
 	   @Autowired
 	   private NoticeFileDao noticeFileDao;
+	   
+	   @Autowired
+	   private MemberDao memberDao;*/
 	   
 	@RequestMapping("notice")
 		   public String notice(@RequestParam(value="p", defaultValue="1") Integer page, 
@@ -48,7 +57,7 @@ public class BoardController {
 			         @RequestParam(value="q", defaultValue="") String query,
 			         Model model) {
 			      
-			      List<NoticeView> list = noticeDao.getList(page, field, query);
+			      List<NoticeView> list = service.getNoticeList();
 			      model.addAttribute("list", list);
 			      
 			      /*String output = String.format("p:%s, q:%s", page, query);
@@ -61,9 +70,9 @@ public class BoardController {
 	   @RequestMapping("notice/{id}")
 	   public String noticeDetail(@PathVariable("id") String id,Model model) {
 	      
-	      model.addAttribute("n", noticeDao.get(id));
-	      model.addAttribute("prev", noticeDao.getPrev(id));
-	      model.addAttribute("next", noticeDao.getNext(id));
+	      model.addAttribute("n", service.getNotice(id));
+	      model.addAttribute("prev", service.getNoticePrev(id));
+	      model.addAttribute("next", service.getNoticeNext(id));
 	      
 	      
 	      return "admin.board.notice.detail";
@@ -76,8 +85,9 @@ public class BoardController {
 	   }
 	   
 	   @RequestMapping(value="notice/reg", method=RequestMethod.POST)
-	   public String noticeReg(Notice notice,MultipartFile file,HttpServletRequest request) throws IOException {
-	      
+	   public String noticeReg(Notice notice,MultipartFile file,HttpServletRequest request,Principal principal) throws IOException {
+	      //file.isempty() 사용자가 파일을 선택하지 않았나?
+		   
 		   //title = new String(title.getBytes("ISO-8859-1"),"UTF-8");  //한글깨짐 방지
 		  // System.out.println(title);
 		   
@@ -89,7 +99,7 @@ public class BoardController {
 		   
 		   /*SimpleDateFormat fmt = new SimpleDateFormat("hh:mm:ss"); //날짜 얻는법3
 		   fmt.format(arg0);*/
-		   String nextId = noticeDao.getNextId();
+		   String nextId = service.getNoticeNextId();
 		   
 		   ServletContext ctx = request.getServletContext();
 		   String path = ctx.getRealPath(String.format("/resource/customer/notice"+year+"/"+nextId));
@@ -121,19 +131,36 @@ public class BoardController {
 		   String fileName = file.getOriginalFilename();
 		   System.out.println(fileName);
 		   
-		   String writerId = "newlec";
+		   String writerId = "SAKURA";
 		   notice.setWriterId(writerId);
 		   //int row = noticeDao.insert(title, content, writerId);
-		  int row = noticeDao.insert(notice);
+		  int row = service.insertAndPointUp(notice);
+		  //memberDao.pointUp(principal.getName());
 		  
-		  noticeFileDao.insert(new NoticeFile(null,fileName,nextId));
+		 /* noticeFileDao.insert(new NoticeFile(null,fileName,nextId));
 		  
 		  Connection con = ;
 		  con.setAutoCommit(false);
 		  
-		  Statement st = con.createStatement();
+		  Statement st = con.createStatement();*/
 		   
 	      return "redirect:../notice";
+	   }
+	   @RequestMapping(value="notice/edit/{id}", method=RequestMethod.GET)
+	   public String noticeEdit(@PathVariable("id") String id,Model model) {
+		   
+		   model.addAttribute("n", service.getNotice(id));
+	      
+	      return "admin.board.notice.edit";
+	   }
+	   
+	   @RequestMapping(value="notice/edit/{id}", method=RequestMethod.POST)
+	   public String noticeEdit(@PathVariable("id") String id, String title, String content) {
+	      
+	      int row = service.updateNotice(id, title, content);
+	      System.out.println(row);
+		   
+	      return "redirect:../{id}";
 	   }
 	   
 }

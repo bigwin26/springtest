@@ -421,15 +421,120 @@ function calcApp(){
 	      }
 
 	   });
+ /*  window.addEventListener("load", function(){
+	  var fileInput = document.querySelector("#ex3-upload input");
+      var spanButton =  document.querySelector("#ex3-upload span");
+      var progressBar =  document.querySelector("#ex3-upload #progress-bar");
+      progressBar.style.width = "0px";
+      spanButton.onclick = function(e){
+            var event = new MouseEvent("click",{
+            	'view':window,
+            	'bubbles':true,
+            	'cancelable':true
+            });
+            
+			fileInput.dispatchEvent(event);
+			fileInput.onchange = function(){
+				
+				var file = fileInput.files[0];
+				var formData = new FormData();
+				
+				formData.append("title", "테스트");
+				formData.append("file", file);
+				
+				var xhr = new XMLHttpRequest();
+				xhr.upload.onprogress = function(e){
+					var percentage = Math.round(e.loaded*100/e.total);
+					
+					progressBar.textContent = percentage +"%";
+					progressBar.style.width = percentage +"px";
+					progressBar.style.background = "green";
+
+				}
+				xhr.onload = function(){
+					
+				};
+				xhr.onerror = function(e){
+					alert("예기치 못한 오류가 발생했습니다.")
+				};
+				xhr.open("POST","../../upload?${_csrf.parameterName}=${_csrf.token}");
+				xhr.send(formData);
+			};
+      };
+   }); */
+   <!-- ------------------전송하기와 트리거 와 파일목록뷰어---------------------------------->
+   window.addEventListener("load", function(){
+		  var fileInput = document.querySelector("#ex3-upload input");
+	      var spanButton =  document.querySelector("#ex3-upload span");
+	      var progressBar =  document.querySelector("#ex3-upload #progress-bar");
+	      progressBar.style.width = "0px";
+		
+	      var fileViewer =  document.querySelector("#ex3-upload ul");
+	      //파일 목록 초기화 
+	      
+	      var xhr = new XMLHttpRequest();
+	  		xhr.onload = function(){
+	      var files = JSON.parse(xhr.responseText);
+	      
+	      for(var i = 0; i<files.length; i++){
+	      var li =  document.createElement("li");
+	      li.textContent = files[i];
+	      fileViewer.appendChild(li);
+	      }
+			
+			};
+			xhr.open("GET","../../file-list");
+			xhr.send();
+	      
+	      //var a = document.createElement("a");
+			spanButton.onclick = function(e){
+	            var event = new MouseEvent("click",{
+	            	'view':window,
+	            	'bubbles':true,
+	            	'cancelable':true
+	            });
+	            
+				fileInput.dispatchEvent(event);
+				fileInput.onchange = function(){
+					
+					var file = fileInput.files[0];
+					var formData = new FormData();
+					
+					formData.append("title", "테스트");
+					formData.append("file", file);
+					
+					var xhr = new XMLHttpRequest();
+					xhr.upload.onprogress = function(e){
+						var percentage = Math.round(e.loaded*100/e.total);
+						
+						progressBar.textContent = percentage +"%";
+						progressBar.style.width = percentage +"px";
+						progressBar.style.background = "green";
+
+					}
+					xhr.onload = function(){
+						
+					};
+					xhr.onerror = function(e){
+						alert("예기치 못한 오류가 발생했습니다.")
+					};
+					xhr.open("POST","../../upload?${_csrf.parameterName}=${_csrf.token}");
+					xhr.send(formData);
+				};
+	      };
+	   });
+   
 </script>
 
 </head>
 <body>
 <!-- ------------------전송하기와 트리거 ---------------------------------->
 	<div id="ex3-upload">
-	<form action="../../upload" method="post" enctype="multipart/form-data">
+	<input type="file" style="display: none;"/>
+	<span style="border:1px solid #999; border-radius:5px; background:pink; padding:3px; cursor: pointer;">파일선택</span>
+	<span id="progress-bar" style="display:inline-block;"></span>
+	<%-- <form action="../../upload?${_csrf.parameterName}=${_csrf.token}" method="post" enctype="multipart/form-data">
 		<div>
-			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 			<input type="submit" value="전송" />
 			<input type="button" value="" />
 		</div>
@@ -447,7 +552,12 @@ function calcApp(){
 				</tbody>
 			</table>
 		</div>
-		</form>
+		</form> --%>
+		<div>
+			<ul>
+				<li></li>
+			</ul>
+		</div>
 	</div>
 <!-- ------------------노드복제 예제2 ---------------------------------->
 	<div id="ex2-clone">
