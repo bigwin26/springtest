@@ -60,11 +60,11 @@ public class CustomerController {
 	  Gson gson = new Gson();
 	  json = gson.toJson(list);
 	  
-	  try {
+	  /*try {
 		  Thread.sleep(3000);
 	  } catch (InterruptedException e) {
 		  e.printStackTrace();
-	  }
+	  }*/
 	 /* StringBuilder builder = new StringBuilder();
 	  builder.append("[");
 	  builder.append("{}");
@@ -81,14 +81,14 @@ public class CustomerController {
    /*@RequestMapping("notice/{id}")
    @ResponseBody
    public String noticeDetail(@PathVariable String id) {
-      return id+"¹øÂ° °øÁö»çÇ×";
+      return id+"ï¿½ï¿½Â° ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½";
    }
    */
    @RequestMapping("notice/{id}")
    public String noticeDetail(@PathVariable("id") String id,Model model) {
       //NoticeDao noticeDao = new SpringNoticeDao();
       
-      //return aaaid+"¹øÂ° °øÁö»çÇ× : "+noticeView.getTitle();
+      //return aaaid+"ï¿½ï¿½Â° ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ : "+noticeView.getTitle();
       
       model.addAttribute("n", noticeDao.get(id));
       //model.addAttribute("prev", noticeDao.getPrev(id));

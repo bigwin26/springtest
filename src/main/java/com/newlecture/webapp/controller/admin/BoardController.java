@@ -86,21 +86,22 @@ public class BoardController {
 	   
 	   @RequestMapping(value="notice/reg", method=RequestMethod.POST)
 	   public String noticeReg(Notice notice,MultipartFile file,HttpServletRequest request,Principal principal) throws IOException {
-	      //file.isempty() »ç¿ëÀÚ°¡ ÆÄÀÏÀ» ¼±ÅÃÇÏÁö ¾Ê¾Ò³ª?
+	      //file.isempty() ï¿½ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾Ò³ï¿½?
 		   
-		   //title = new String(title.getBytes("ISO-8859-1"),"UTF-8");  //ÇÑ±Û±úÁü ¹æÁö
+		   //title = new String(title.getBytes("ISO-8859-1"),"UTF-8");  //ï¿½Ñ±Û±ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		  // System.out.println(title);
 		   
-		   //Date curDate = new Date(); //³¯Â¥ ¾ò´Â¹ý1
+		   //Date curDate = new Date(); //ï¿½ï¿½Â¥ ï¿½ï¿½Â¹ï¿½1
 		   
-		   Calendar cal = Calendar.getInstance(); //³¯Â¥ ¾ò´Â¹ý2
+		   Calendar cal = Calendar.getInstance(); //ï¿½ï¿½Â¥ ï¿½ï¿½Â¹ï¿½2
 		  // Date curdate2 = cal.getTime();
 		   int year = cal.get(Calendar.YEAR);
 		   
-		   /*SimpleDateFormat fmt = new SimpleDateFormat("hh:mm:ss"); //³¯Â¥ ¾ò´Â¹ý3
+		   /*SimpleDateFormat fmt = new SimpleDateFormat("hh:mm:ss"); //ï¿½ï¿½Â¥ ï¿½ï¿½Â¹ï¿½3
 		   fmt.format(arg0);*/
 		   String nextId = service.getNoticeNextId();
-		   
+		   String name = principal.getName();
+		   System.out.println(name);
 		   ServletContext ctx = request.getServletContext();
 		   String path = ctx.getRealPath(String.format("/resource/customer/notice"+year+"/"+nextId));
 		   
@@ -110,7 +111,7 @@ public class BoardController {
 		   
 		   if(!f.exists()) {
 			   if(!f.mkdirs())
-				   System.out.println("µð·ºÅä¸®¸¦ »ý¼ºÇÒ¼ö ¾ø½À´Ï´Ù.");
+				   System.out.println("ï¿½ï¿½ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ò¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.");
 		   }
 		   
 		   path+= File.separator+file.getOriginalFilename();

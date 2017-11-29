@@ -23,7 +23,7 @@ import com.newlecture.webapp.entity.NoticeView;
 @RequestMapping("/member/*")
 public class MemberController {
 	
-   @RequestMapping(value="login", method=RequestMethod.GET)
+   @RequestMapping(value="login")
    public String login() { 
        
       return "member.login";
